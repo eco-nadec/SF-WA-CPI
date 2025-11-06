@@ -23,7 +23,17 @@
       "Bash(gh repo view:*)",
       "Bash(do if [ -f \"$dir/META-INF/MANIFEST.MF\" ])",
       "Bash([[ ! \"$dir\" =~ \"SFNadecWorkAssignment_artifacts (1)\" ]])",
-      "Bash(fi)"
+      "Bash(fi)",
+      "Skill(docx)",
+      "Bash(pandoc:*)",
+      "Read(//tmp/**)",
+      "Read(//Users/abdelrahmanelamin/.claude/skills/docx/**)",
+      "Bash(python:*)",
+      "Bash(node generate-iflow-docs.js:*)",
+      "Bash(npm install:*)",
+      "Bash(do echo \"Converting: $file\")",
+      "Bash(soffice:*)",
+      "Read(//Applications/**)"
     ],
     "deny": [],
     "ask": []
