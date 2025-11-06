@@ -4,24 +4,28 @@ This document provides proper names and descriptions for each integration flow (
 
 ---
 
-## 📋 Current vs. Recommended Names
+## 📋 Current vs. Recommended Names (BOTH Display + Technical)
 
-| # | Current Name | Recommended Name | Status |
-|---|-------------|------------------|--------|
-| 1 | Delete Work Assignment | **SF_WorkAssignment_Delete** | ✅ Good |
-| 2 | Get Employee List By Location | **SF_Employee_GetByLocation** | 🔄 Rename |
-| 3 | Get Employee TimeSheet | **SF_TimeEvent_GetByEmployee** | ❌ DELETE (duplicate) |
-| 4 | Get List of Employee TimeSheet | **SF_TimeEvent_GetByEmployeeDate** | 🔄 Rename |
-| 5 | Get List of work Assignment | **SF_WorkAssignment_GetByDateRange** | 🔄 Rename |
-| 6 | Get Location work Assignment List | **WA_TS_Orchestrator_ByLocation** | 🔄 Rename |
-| 7 | Get Work Assignment And Timesheet | **WA_TS_Combine_Single** | ⚠️ Consider DELETE |
-| 8 | Get Work Assignment And Timesheet Bulk | **WA_TS_Combine_Bulk** | 🔄 Rename |
-| 9 | Resolve Work Assignment Conflict Action | **WA_TS_Conflict_Execute** | 🔄 Rename |
-| 10 | Resolve Work Assignment Conflict Logic | **WA_TS_Conflict_Analyze** | 🔄 Rename |
-| 11 | Resolve Work Assignment Conflict Main | **WA_TS_Conflict_CoreOrchestrator** | 🔄 Rename |
-| 12 | Work Assignment Conflict Main | **WA_TS_Conflict_EndToEnd** | 🔄 Rename |
-| 13 | test-Create Employee Timesheet | **Test_TimeEvent_Create** | 🔄 Rename |
-| 14 | test-Delete Employee Timesheet | **Test_TimeEvent_Delete** | ⚠️ Consolidate |
+**Note:** Each flow has TWO names:
+- **Display Name** - What users see in CPI Web UI (human-friendly, with spaces)
+- **Technical Name** - What systems use (directory, code, URLs - with underscores)
+
+| # | Current Name | Display Name (UI) | Technical Name (Code) | Status |
+|---|-------------|-------------------|---------------------|--------|
+| 1 | Delete Work Assignment | Delete Work Assignment | `SF_WorkAssignment_Delete` | ✅ Update |
+| 2 | Get Employee List By Location | Get Employee List by Location | `SF_Employee_GetByLocation` | ✅ Update |
+| 3 | Get Employee TimeSheet | *(DELETE - duplicate)* | *(DELETE)* | ❌ DELETE |
+| 4 | Get List of Employee TimeSheet | Get Employee Timesheet List | `SF_TimeEvent_GetByEmployeeDate` | ✅ Update |
+| 5 | Get List of work Assignment | Get Work Assignment List | `SF_WorkAssignment_GetByDateRange` | ✅ Update |
+| 6 | Get Location work Assignment List | WA & TS Orchestrator - By Location | `WA_TS_Orchestrator_ByLocation` | ✅ Update |
+| 7 | Get Work Assignment And Timesheet | WA & TS Data - Single Record | `WA_TS_Combine_Single` | ⚠️ Consider DELETE |
+| 8 | Get Work Assignment And Timesheet Bulk | WA & TS Data - Bulk Retrieval | `WA_TS_Combine_Bulk` | ✅ Update |
+| 9 | Resolve Work Assignment Conflict Action | WA Conflict Resolution - Execute Actions | `WA_TS_Conflict_Execute` | ✅ Update |
+| 10 | Resolve Work Assignment Conflict Logic | WA Conflict Resolution - Analyze Logic | `WA_TS_Conflict_Analyze` | ✅ Update |
+| 11 | Resolve Work Assignment Conflict Main | WA Conflict Resolution - Core Orchestrator | `WA_TS_Conflict_CoreOrchestrator` | ✅ Update |
+| 12 | Work Assignment Conflict Main | WA Conflict Resolution - End to End | `WA_TS_Conflict_EndToEnd` | ✅ Update |
+| 13 | test-Create Employee Timesheet | TEST - Create Employee Timesheet | `Test_TimeEvent_Create` | ✅ Update |
+| 14 | test-Delete Employee Timesheet | TEST - Delete Employee Timesheet | `Test_TimeEvent_Delete` | ✅ Update |
 
 ---
 
@@ -29,10 +33,14 @@ This document provides proper names and descriptions for each integration flow (
 
 ### 1. SF_WorkAssignment_Delete
 **Current:** Delete Work Assignment
+**Display Name (UI):** Delete Work Assignment
+**Technical Name (Code):** `SF_WorkAssignment_Delete`
+
 **Purpose:** Delete work assignment records from SuccessFactors
 **Input:** XML with work assignment IDs marked as deleted=true
 **Output:** JSON payload for SF OData upsert (sets approvalStatus=CANCELLED)
 **Trigger:** Called by conflict resolution action flow
+**Endpoint:** `/deleteWAList`
 
 **Key Script Logic:**
 - Reads XML `<Item>` nodes
@@ -43,10 +51,14 @@ This document provides proper names and descriptions for each integration flow (
 
 ### 2. SF_Employee_GetByLocation
 **Current:** Get Employee List By Location
+**Display Name (UI):** Get Employee List by Location
+**Technical Name (Code):** `SF_Employee_GetByLocation`
+
 **Purpose:** Retrieve employee list filtered by location ID
 **Input:** HTTP query parameter `location=<locationId>`
 **Output:** Employee data from SuccessFactors
 **Trigger:** HTTP endpoint with location query parameter
+**Endpoint:** `/getEmployeeByLocation`
 
 **Key Script Logic:**
 - Parses `location` from CamelHttpQuery
@@ -55,8 +67,11 @@ This document provides proper names and descriptions for each integration flow (
 
 ---
 
-### 3. ❌ SF_TimeEvent_GetByEmployee (DELETE - DUPLICATE)
+### 3. ❌ GET EMPLOYEE TIMESHEET (DELETE - DUPLICATE)
 **Current:** Get Employee TimeSheet
+**Display Name (UI):** *(DELETE - no need to rename)*
+**Technical Name (Code):** *(DELETE - no need to rename)*
+
 **Status:** **100% DUPLICATE** of "Get List of Employee TimeSheet"
 **Recommendation:** ❌ **DELETE THIS FLOW**
 
@@ -72,15 +87,20 @@ diff script2.groovy: Files are identical (2202 bytes)
 ```
 
 **Action:** Delete this flow and use "Get List of Employee TimeSheet" instead
+**Endpoint to Remove:** `/getEmployeeTimeSheet`
 
 ---
 
 ### 4. SF_TimeEvent_GetByEmployeeDate
 **Current:** Get List of Employee TimeSheet
+**Display Name (UI):** Get Employee Timesheet List
+**Technical Name (Code):** `SF_TimeEvent_GetByEmployeeDate`
+
 **Purpose:** Retrieve and process timesheet events, grouping by date and pairing check-ins/check-outs
 **Input:** TimeEvent data from SuccessFactors OData
 **Output:** JSON array with paired check-in/check-out per date
 **Trigger:** Called after fetching time events from SF
+**Endpoint:** `/timeEvent/getListOfEmployeeTimeSheet`
 
 **Key Script Logic:**
 - Groups events by local date (handles timezone offsets)
@@ -93,10 +113,14 @@ diff script2.groovy: Files are identical (2202 bytes)
 
 ### 5. SF_WorkAssignment_GetByDateRange
 **Current:** Get List of work Assignment
+**Display Name (UI):** Get Work Assignment List
+**Technical Name (Code):** `SF_WorkAssignment_GetByDateRange`
+
 **Purpose:** Fetch work assignments within a dynamic date range (last 2 months to current month)
 **Input:** None (system-calculated date range)
 **Output:** Work assignment records from SuccessFactors
 **Trigger:** Scheduled or manual execution
+**Endpoint:** `/workAssignment`
 
 **Key Script Logic:**
 - Calculates date range: first day of 2 months ago to last day of current month
@@ -108,10 +132,14 @@ diff script2.groovy: Files are identical (2202 bytes)
 
 ### 6. WA_TS_Orchestrator_ByLocation
 **Current:** Get Location work Assignment List
+**Display Name (UI):** WA & TS Orchestrator - By Location
+**Technical Name (Code):** `WA_TS_Orchestrator_ByLocation`
+
 **Purpose:** Orchestrator that retrieves work assignments and timesheets for a specific location, then combines them
 **Input:** HTTP query parameter `location=<locationId>`
 **Output:** Combined XML with work assignment and timesheet data
-**Trigger:** HTTP endpoint `/getWAAndTimesheet`
+**Trigger:** HTTP endpoint
+**Endpoint:** `/getWAAndTimesheet`
 
 **Flow Type:** **Orchestrator** (coordinates multiple iFlow calls)
 
@@ -131,12 +159,19 @@ diff script2.groovy: Files are identical (2202 bytes)
 
 ---
 
-### 7. WA_TS_Combine_Single
+### 7. WA_TS_Combine_Single (OPTIONAL - Consider Deleting)
 **Current:** Get Work Assignment And Timesheet
+**Display Name (UI):** WA & TS Data - Single Record
+**Technical Name (Code):** `WA_TS_Combine_Single`
+
 **Purpose:** Fetch and combine single work assignment with corresponding timesheet
 **Input:** Work assignment record (JSON or XML)
 **Output:** Combined XML payload with work assignment and timesheet data
 **Trigger:** Single record processing
+**Endpoint:** `/getWAAndTimesheet` ⚠️ **CONFLICTS with flow #6**
+
+**⚠️ WARNING:** This flow shares the same endpoint as flow #6!
+**Recommendation:** DELETE if not used, or change endpoint to `/getWAAndTimesheetSingle`
 
 **Key Script Logic:**
 - Converts JSON work assignment to XML
@@ -148,10 +183,14 @@ diff script2.groovy: Files are identical (2202 bytes)
 
 ### 8. WA_TS_Combine_Bulk
 **Current:** Get Work Assignment And Timesheet Bulk
+**Display Name (UI):** WA & TS Data - Bulk Retrieval
+**Technical Name (Code):** `WA_TS_Combine_Bulk`
+
 **Purpose:** Batch processing of multiple work assignments with their timesheets
 **Input:** Multiple work assignment records (JSON array)
 **Output:** Combined XML with all work assignments and timesheets
 **Trigger:** Bulk/batch processing
+**Endpoint:** `/getWAAndTimesheetBulk`
 
 **Key Script Logic:**
 - **Script 1:** Converts JSON array to XML `<Records>` structure
@@ -164,10 +203,14 @@ diff script2.groovy: Files are identical (2202 bytes)
 
 ### 9. WA_TS_Conflict_Execute
 **Current:** Resolve Work Assignment Conflict Action
+**Display Name (UI):** WA Conflict Resolution - Execute Actions
+**Technical Name (Code):** `WA_TS_Conflict_Execute`
+
 **Purpose:** Execute resolved conflict actions (deletes and inserts) in SuccessFactors
 **Input:** Resolved conflict payload with delete/insert lists
 **Output:** Confirmation of executed actions
 **Trigger:** Called by orchestrator after conflict analysis
+**Endpoint:** `/resolveWAConflictAction`
 
 **Key Script Logic:**
 - Receives output from conflict analysis (timesheetDelete, workAssignmentDelete, timeEventInsert)
@@ -179,10 +222,14 @@ diff script2.groovy: Files are identical (2202 bytes)
 
 ### 10. WA_TS_Conflict_Analyze
 **Current:** Resolve Work Assignment Conflict Logic
+**Display Name (UI):** WA Conflict Resolution - Analyze Logic
+**Technical Name (Code):** `WA_TS_Conflict_Analyze`
+
 **Purpose:** Core conflict detection and resolution algorithm
 **Input:** JSON array with paired work assignments and timesheets
 **Output:** Resolved items with actions (delete/trim/no action)
 **Trigger:** Called by orchestrator with combined WA/TS data
+**Endpoint:** `/resovleWAConfilict` ⚠️ **HAS TYPO** (should be `/resolveWAConflict`)
 
 **Key Script Logic:**
 - **CRITICAL ALGORITHM:** See `script1.groovy:7-145`
@@ -267,10 +314,14 @@ Start → External Call: Get WA and Timesheet → External Call: Resolve conflic
 
 ### 13. Test_TimeEvent_Create
 **Current:** test-Create Employee Timesheet
+**Display Name (UI):** TEST - Create Employee Timesheet
+**Technical Name (Code):** `Test_TimeEvent_Create`
+
 **Purpose:** Test flow for creating timesheet events in SuccessFactors
 **Input:** JSON with `EmpId`, `Date`, `Checkin`, `Checkout`, optional `Timezone`
 **Output:** Array of TimeEvent records (C10 and C20)
 **Trigger:** Manual testing via HTTP endpoint
+**Endpoint:** `/createEmployeeTimesheet`
 
 **Key Script Logic:**
 - Parses input: employeeId, date (yyyy-MM-dd), checkin/checkout times (HH:mm)
