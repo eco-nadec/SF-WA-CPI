@@ -1,0 +1,5 @@
+#Store metainfo properties
+#Thu Nov 06 09:43:33 UTC 2025
+description=Retrieves and combines multiple work assignments with timesheets for bulk conflict resolution.
+source=http
+target=http

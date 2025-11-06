@@ -1,0 +1,5 @@
+#Store metainfo properties
+#Thu Nov 06 09:43:33 UTC 2025
+description=End-to-end orchestrator for complete conflict resolution. Retrieves data, analyzes conflicts, and executes actions.
+source=http
+target=http

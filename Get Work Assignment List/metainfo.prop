@@ -1,0 +1,5 @@
+#Store metainfo properties
+#Thu Nov 06 09:43:33 UTC 2025
+description=Fetches work assignments from SuccessFactors for dynamic date range (last 2 months to current month).
+source=http
+target=http

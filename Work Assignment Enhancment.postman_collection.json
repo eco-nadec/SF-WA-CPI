@@ -1,0 +1,757 @@
+{
+	"info": {
+		"_postman_id": "d89ded27-a767-48d5-a997-428dfd1f4ddd",
+		"name": "Work Assignment Enhancment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36227846"
+	},
+	"item": [
+		{
+			"name": "2-Get Work Assigment and TimeSheet",
+			"item": [
+				{
+					"name": "Get List of Work Assignment",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "nka8wzk.yrw1VKW4qhg",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "S0026898036",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://e650100-iflmap.hcisbt.sa1.hana.ondemand.com/http/workAssignment",
+							"protocol": "https",
+							"host": [
+								"e650100-iflmap",
+								"hcisbt",
+								"sa1",
+								"hana",
+								"ondemand",
+								"com"
+							],
+							"path": [
+								"http",
+								"workAssignment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get  Single Employee Timesheet",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "nka8wzk.yrw1VKW4qhg",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "S0026898036",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://e650100-iflmap.hcisbt.sa1.hana.ondemand.com/http/getEmployeeTimeSheet?EmployeeId=30301&date=2025-08-03",
+							"protocol": "https",
+							"host": [
+								"e650100-iflmap",
+								"hcisbt",
+								"sa1",
+								"hana",
+								"ondemand",
+								"com"
+							],
+							"path": [
+								"http",
+								"getEmployeeTimeSheet"
+							],
+							"query": [
+								{
+									"key": "EmployeeId",
+									"value": "30301"
+								},
+								{
+									"key": "date",
+									"value": "2025-08-03"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get  List of Employee Timesheet",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "nka8wzk.yrw1VKW4qhg",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "S0026898036",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://e650100-iflmap.hcisbt.sa1.hana.ondemand.com/http/getListOfEmployeeTimeSheet",
+							"protocol": "https",
+							"host": [
+								"e650100-iflmap",
+								"hcisbt",
+								"sa1",
+								"hana",
+								"ondemand",
+								"com"
+							],
+							"path": [
+								"http",
+								"getListOfEmployeeTimeSheet"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List of employee Bulk",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "nka8wzk.yrw1VKW4qhg",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "S0026898036",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://e650100-iflmap.hcisbt.sa1.hana.ondemand.com/http/getListOfEmployeeTimeSheet",
+							"protocol": "https",
+							"host": [
+								"e650100-iflmap",
+								"hcisbt",
+								"sa1",
+								"hana",
+								"ondemand",
+								"com"
+							],
+							"path": [
+								"http",
+								"getListOfEmployeeTimeSheet"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3-Resolve WA Confilct Main",
+			"item": [
+				{
+					"name": "resovle WA confict logic",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "nka8wzk.yrw1VKW4qhg",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "S0026898036",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"workAssignment\": {\n            \"id\": \"eb7ca35e90404a33992455d49df8e515\",\n            \"employeeId\": \"30933\",\n            \"date\": \"2025-07-17\",\n            \"startTime\": \"12:00\",\n            \"endTime\": \"15:00\"\n        },\n        \"timesheet\": {\n            \"employeeId\": \"30933\",\n            \"date\": \"2025-07-17\",\n            \"checkIn\": {\n                \"id\": \"40119c2c8ccb47e6b20f5900f38ceac7\",\n                \"timeLocal\": \"13:00\"\n            },\n            \"checkOut\": {\n                \"id\": \"fc026fac643b4ef091fe1930b4bf02a9\",\n                \"timeLocal\": \"14:00\"\n            }\n        }\n    },\n    {\n        \"workAssignment\": {\n            \"id\": \"eb95d2e9ff4243c4ae83a97b63a52c82\",\n            \"employeeId\": \"30933\",\n            \"date\": \"2025-08-10\",\n            \"startTime\": \"14:00\",\n            \"endTime\": \"16:00\"\n        },\n        \"timesheet\": {\n            \"employeeId\": \"30933\",\n            \"date\": \"2025-08-10\",\n            \"checkIn\": {\n                \"id\": \"2b53b28b193c4c07871ae76db1fc8a9a\",\n                \"timeLocal\": \"14:03\"\n            },\n            \"checkOut\": {\n                \"id\": \"f2097ae18698445ca364deb7dd07daef\",\n                \"timeLocal\": \"18:03\"\n            }\n        }\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://e650100-iflmap.hcisbt.sa1.hana.ondemand.com/http/resovleWAConfilict",
+							"protocol": "https",
+							"host": [
+								"e650100-iflmap",
+								"hcisbt",
+								"sa1",
+								"hana",
+								"ondemand",
+								"com"
+							],
+							"path": [
+								"http",
+								"resovleWAConfilict"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "resovle WA confict Action",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "nka8wzk.yrw1VKW4qhg",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "S0026898036",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"resolvedItems\": [\n        {\n            \"workAssignment\": null,\n            \"timesheet\": null,\n            \"actions\": [\n                \"Deleted timesheet (fully inside workAssignment)\"\n            ]\n        },\n        {\n            \"workAssignment\": null,\n            \"timesheet\": {\n                \"employeeId\": \"30933\",\n                \"date\": \"2025-08-10\",\n                \"checkIn\": {\n                    \"id\": \"2b53b28b193c4c07871ae76db1fc8a9a\",\n                    \"timeLocal\": \"16:01\"\n                },\n                \"checkOut\": {\n                    \"id\": \"f2097ae18698445ca364deb7dd07daef\",\n                    \"timeLocal\": \"18:03\"\n                }\n            },\n            \"actions\": [\n                \"Trimmed checkin; deleted old C10 and inserted new C10\"\n            ]\n        }\n    ],\n    \"timesheetDelete\": {\n        \"value\": [\n            {\n                \"id\": \"40119c2c8ccb47e6b20f5900f38ceac7\",\n                \"deleted\": true\n            },\n            {\n                \"id\": \"fc026fac643b4ef091fe1930b4bf02a9\",\n                \"deleted\": true\n            },\n            {\n                \"id\": \"2b53b28b193c4c07871ae76db1fc8a9a\",\n                \"deleted\": true\n            }\n        ]\n    },\n    \"workAssignmentDelete\": {\n        \"value\": []\n    },\n    \"timeEventInsert\": [\n        {\n            \"id\": \"1\",\n            \"assignmentId\": \"30933\",\n            \"typeCode\": \"C10\",\n            \"timestamp\": \"2025-08-10T16:01:00+0300\",\n            \"terminalId\": \"Manual\",\n            \"timeTypeCode\": \"WORKING_TIME\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://e650100-iflmap.hcisbt.sa1.hana.ondemand.com/http/resolveWAConflictAction",
+							"protocol": "https",
+							"host": [
+								"e650100-iflmap",
+								"hcisbt",
+								"sa1",
+								"hana",
+								"ondemand",
+								"com"
+							],
+							"path": [
+								"http",
+								"resolveWAConflictAction"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "test Help Request",
+			"item": [
+				{
+					"name": "delete Time Sheet",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "nka8wzk.yrw1VKW4qhg",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "S0026898036",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"EmpId\": \"30933\",\n  \"Date\": \"2025-08-14\"\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://e650100-iflmap.hcisbt.sa1.hana.ondemand.com/http/deleteEmployeeTimesheet",
+							"protocol": "https",
+							"host": [
+								"e650100-iflmap",
+								"hcisbt",
+								"sa1",
+								"hana",
+								"ondemand",
+								"com"
+							],
+							"path": [
+								"http",
+								"deleteEmployeeTimesheet"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Time Sheet",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "nka8wzk.yrw1VKW4qhg",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "S0026898036",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"EmpId\": \"30933\",\n  \"Date\": \"2025-08-14\",\n  \"Checkin\": \"10:00\",\n  \"Checkout\": \"18:00\",\n  \"Timezone\": \"Asia/Riyadh\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://e650100-iflmap.hcisbt.sa1.hana.ondemand.com/http/createEmployeeTimesheet",
+							"protocol": "https",
+							"host": [
+								"e650100-iflmap",
+								"hcisbt",
+								"sa1",
+								"hana",
+								"ondemand",
+								"com"
+							],
+							"path": [
+								"http",
+								"createEmployeeTimesheet"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "SF Request",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "work Assignemnt",
+			"item": [
+				{
+					"name": "get Work Assignment per location",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "M.eco@12345",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "eco@nationalagT1",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api23preview.sapsf.com/odata/v2/cust_timepairreset?$select=cust_Date,cust_EndTime,cust_Location,cust_StartTime,externalCode",
+							"protocol": "https",
+							"host": [
+								"api23preview",
+								"sapsf",
+								"com"
+							],
+							"path": [
+								"odata",
+								"v2",
+								"cust_timepairreset"
+							],
+							"query": [
+								{
+									"key": "$select",
+									"value": "cust_Date,cust_EndTime,cust_Location,cust_StartTime,externalCode"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Employee Info location",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "M.eco@12345",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "eco@nationalagT1",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api23preview.sapsf.com/odata/v2/EmpJob?$select=location,seqNumber,startDate,userId &$filter location eq '1003'&$format=json",
+							"protocol": "https",
+							"host": [
+								"api23preview",
+								"sapsf",
+								"com"
+							],
+							"path": [
+								"odata",
+								"v2",
+								"EmpJob"
+							],
+							"query": [
+								{
+									"key": "$select",
+									"value": "location,seqNumber,startDate,userId "
+								},
+								{
+									"key": "$filter location eq '1003'",
+									"value": null
+								},
+								{
+									"key": "$format",
+									"value": "json"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "1-WA Main",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "nka8wzk.yrw1VKW4qhg",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "S0026898036",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://e650100-iflmap.hcisbt.sa1.hana.ondemand.com/http/resolveWAMain",
+					"protocol": "https",
+					"host": [
+						"e650100-iflmap",
+						"hcisbt",
+						"sa1",
+						"hana",
+						"ondemand",
+						"com"
+					],
+					"path": [
+						"http",
+						"resolveWAMain"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2-Get Work Assigment and TimeSheet Bulk",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "nka8wzk.yrw1VKW4qhg",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "S0026898036",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://e650100-iflmap.hcisbt.sa1.hana.ondemand.com/http/getWAAndTimesheetBulk",
+					"protocol": "https",
+					"host": [
+						"e650100-iflmap",
+						"hcisbt",
+						"sa1",
+						"hana",
+						"ondemand",
+						"com"
+					],
+					"path": [
+						"http",
+						"getWAAndTimesheetBulk"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3-Resolve WA Confilct Main",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "nka8wzk.yrw1VKW4qhg",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "S0026898036",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"workAssignment\": {\n            \"id\": \"eb7ca35e90404a33992455d49df8e515\",\n            \"employeeId\": \"30933\",\n            \"date\": \"2025-07-17\",\n            \"startTime\": \"12:00\",\n            \"endTime\": \"15:00\"\n        },\n        \"timesheet\": {\n            \"employeeId\": \"\",\n            \"date\": \"\",\n            \"checkIn\": {\n                \"id\": \"\",\n                \"timeLocal\": \"\"\n            },\n            \"checkOut\": {\n                \"id\": \"\",\n                \"timeLocal\": \"\"\n            }\n        }\n    },\n    {\n        \"workAssignment\": {\n            \"id\": \"eb95d2e9ff4243c4ae83a97b63a52c82\",\n            \"employeeId\": \"30933\",\n            \"date\": \"2025-08-10\",\n            \"startTime\": \"14:00\",\n            \"endTime\": \"16:00\"\n        },\n        \"timesheet\": {\n            \"employeeId\": \"30933\",\n            \"date\": \"2025-08-10\",\n            \"checkIn\": {\n                \"id\": \"03ec0f65f94a476caacbebb1fdd23e6a\",\n                \"timeLocal\": \"16:01\"\n            },\n            \"checkOut\": {\n                \"id\": \"f2097ae18698445ca364deb7dd07daef\",\n                \"timeLocal\": \"17:03\"\n            }\n        }\n    }\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://e650100-iflmap.hcisbt.sa1.hana.ondemand.com/http/resolveWAConflictMain",
+					"protocol": "https",
+					"host": [
+						"e650100-iflmap",
+						"hcisbt",
+						"sa1",
+						"hana",
+						"ondemand",
+						"com"
+					],
+					"path": [
+						"http",
+						"resolveWAConflictMain"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete workassignment",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "M.eco@12345",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "eco@nationalagT1",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"__metadata\":{\n\"uri\":\"EmployeeTime\"\n},\n\"externalCode\":\"e5cb5911ad204c84be2daa904dc6e3be\",\n\"approvalStatus\" : \"CANCELLED\"\n}\n ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api23preview.sapsf.com/odata/v2/upsert",
+					"protocol": "https",
+					"host": [
+						"api23preview",
+						"sapsf",
+						"com"
+					],
+					"path": [
+						"odata",
+						"v2",
+						"upsert"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CPI delete workassignment",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "nka8wzk.yrw1VKW4qhg",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "S0026898036",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"id\": \"eb95d2e9ff4243c4ae83a97b63a52c82\",\n        \"deleted\": true\n    }\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://e650100-iflmap.hcisbt.sa1.hana.ondemand.com/http/resolveWAConflictMain",
+					"protocol": "https",
+					"host": [
+						"e650100-iflmap",
+						"hcisbt",
+						"sa1",
+						"hana",
+						"ondemand",
+						"com"
+					],
+					"path": [
+						"http",
+						"resolveWAConflictMain"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

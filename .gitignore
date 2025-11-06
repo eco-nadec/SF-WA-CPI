@@ -23,6 +23,11 @@ Thumbs.db
 *.bak
 *_backup.*
 *.tar.gz
+*.zip
+
+# Duplicate/backup folders
+**/SFNadecWorkAssignment_artifacts (1)/
+**/SFNadecWorkAssignment_artifacts (1)
 
 # Temp files
 *.tmp

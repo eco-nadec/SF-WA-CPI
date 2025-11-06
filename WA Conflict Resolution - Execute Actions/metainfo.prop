@@ -1,0 +1,5 @@
+#Store metainfo properties
+#Thu Nov 06 09:43:33 UTC 2025
+description=\ Executes conflict resolution actions\: deletes timesheets, inserts new time events, and removes work assignments
+source=http
+target=http

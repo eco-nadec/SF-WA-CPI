@@ -1,0 +1,5 @@
+#Store metainfo properties
+#Thu Nov 06 09:43:33 UTC 2025
+description=Analyzes time overlaps between work assignments and timesheets, applies resolution rules, and generates action lists.
+source=http
+target=http

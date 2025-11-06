@@ -1,5 +1,5 @@
 #Store metainfo properties
-#Thu Nov 06 05:27:06 UTC 2025
-description=\ 
+#Thu Nov 06 09:43:33 UTC 2025
+description=Deletes work assignments in SuccessFactors by setting approvalStatus to CANCELLED via OData upsert.
 source=http
 target=http

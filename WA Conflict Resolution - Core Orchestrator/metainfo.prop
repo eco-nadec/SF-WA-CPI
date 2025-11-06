@@ -1,0 +1,5 @@
+#Store metainfo properties
+#Thu Nov 06 09:43:33 UTC 2025
+description=Orchestrates conflict analysis and execution. Expects combined WA+TS data as input, analyzes conflicts, then executes actions.
+source=http
+target=http
