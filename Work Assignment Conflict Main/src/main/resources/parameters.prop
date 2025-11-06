@@ -1,0 +1,4 @@
+#Thu Nov 06 05:26:03 UTC 2025
+CPI_RESOLVE_CONFILICT_MAIN=https\://e650100-iflmap.hcisbt.sa1.hana.ondemand.com/http/resolveWAConflictMain
+CPI_GET_WA_TIME_BULK=https\://e650100-iflmap.hcisbt.sa1.hana.ondemand.com/http/getWAAndTimesheetBulk
+CPI_CRED=SF-CPI-USER

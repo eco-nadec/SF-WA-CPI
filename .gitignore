@@ -1,0 +1,37 @@
+# SAP CPI specific
+*.class
+*.jar
+*.war
+*.ear
+target/
+bin/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+.classpath
+.project
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Backup files
+*.backup
+*.bak
+*_backup.*
+*.tar.gz
+
+# Temp files
+*.tmp
+*.temp
+*.log
+
+# Credentials (IMPORTANT)
+credentials.json
+*.credentials
+*.key
+*.pem
+password.txt

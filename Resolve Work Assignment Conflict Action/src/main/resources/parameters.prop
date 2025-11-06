@@ -1,0 +1,6 @@
+#Thu Nov 06 05:03:23 UTC 2025
+CPI_DELETE_WA_LIST=https\://e650100-iflmap.hcisbt.sa1.hana.ondemand.com/http/deleteWAList
+SF_SAML_Time_event=SF-Nadec-TimeEvent
+SF_TIME_EVENT=https\://api23preview.sapsf.com/rest/timemanagement/timeeventprocessing/v1/TimeEvents
+SF_CLOCK_IN=https\://api23preview.sapsf.com/rest/timemanagement/timeeventprocessing/clockinclockout/v1/timeevents
+CPI_CRED=SF-CPI-USER
