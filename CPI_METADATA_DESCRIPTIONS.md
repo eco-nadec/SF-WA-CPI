@@ -25,7 +25,7 @@ Delete Work Assignment
 
 **Description:**
 ```
-Deletes work assignment records in SuccessFactors by setting approvalStatus to CANCELLED. Receives XML with work assignment IDs and performs batch deletion via OData upsert.
+Deletes work assignments in SuccessFactors by setting approvalStatus to CANCELLED via OData upsert.
 ```
 
 **Technical Name:** `SF_WorkAssignment_Delete`
@@ -42,7 +42,7 @@ Get Employee List by Location
 
 **Description:**
 ```
-Retrieves employee list from SuccessFactors filtered by location ID. Returns employee job data including location, seqNumber, startDate, and userId via OData query.
+Retrieves employee list from SuccessFactors filtered by location ID via OData.
 ```
 
 **Technical Name:** `SF_Employee_GetByLocation`
@@ -65,7 +65,7 @@ Get Employee Timesheet List
 
 **Description:**
 ```
-Retrieves and processes timesheet events (C10/C20) from SuccessFactors, groups by date, pairs check-ins with check-outs, and converts UTC timestamps to local time. Returns structured JSON with employee timesheet data.
+Retrieves timesheet events (C10/C20) from SuccessFactors, groups by date, and pairs check-ins with check-outs.
 ```
 
 **Technical Name:** `SF_TimeEvent_GetByEmployeeDate`
@@ -82,7 +82,7 @@ Get Work Assignment List
 
 **Description:**
 ```
-Fetches work assignments from SuccessFactors for a dynamic date range (last 2 months to current month). Automatically calculates date range and retrieves employee time records via OData.
+Fetches work assignments from SuccessFactors for dynamic date range (last 2 months to current month).
 ```
 
 **Technical Name:** `SF_WorkAssignment_GetByDateRange`
@@ -99,7 +99,7 @@ WA & TS Orchestrator - By Location
 
 **Description:**
 ```
-Orchestrates retrieval and combination of work assignments and timesheets for employees at a specific location. Loops through work assignments, fetches corresponding timesheets, and merges results into combined XML payload.
+Retrieves work assignments and timesheets for a specific location and combines them into XML payload.
 ```
 
 **Technical Name:** `WA_TS_Orchestrator_ByLocation`
@@ -116,7 +116,7 @@ WA & TS Data - Single Record
 
 **Description:**
 ```
-Fetches and combines single work assignment with corresponding timesheet. Converts JSON to XML, retrieves employee timesheet events, and merges data for conflict detection.
+Fetches and combines single work assignment with corresponding timesheet for conflict detection.
 ```
 
 **Technical Name:** `WA_TS_Combine_Single`
@@ -135,7 +135,7 @@ WA & TS Data - Bulk Retrieval
 
 **Description:**
 ```
-Batch processing for multiple work assignments and timesheets. Retrieves WA data for date range, fetches corresponding timesheet events, and combines results into XML for bulk conflict resolution.
+Retrieves and combines multiple work assignments with timesheets for bulk conflict resolution.
 ```
 
 **Technical Name:** `WA_TS_Combine_Bulk`
@@ -152,7 +152,7 @@ WA Conflict Resolution - Execute Actions
 
 **Description:**
 ```
-Executes conflict resolution actions in SuccessFactors. Deletes timesheet events, inserts new time events for trimmed times, and removes conflicting work assignments based on analysis results.
+Executes conflict resolution actions: deletes timesheets, inserts new time events, and removes work assignments.
 ```
 
 **Technical Name:** `WA_TS_Conflict_Execute`
@@ -169,7 +169,7 @@ WA Conflict Resolution - Analyze Logic
 
 **Description:**
 ```
-Core conflict detection algorithm. Analyzes time overlaps between work assignments and timesheets, applies resolution rules (delete/trim), and generates action lists for execution. Uses Asia/Riyadh timezone.
+Analyzes time overlaps between work assignments and timesheets, applies resolution rules, and generates action lists.
 ```
 
 **Technical Name:** `WA_TS_Conflict_Analyze`
@@ -186,7 +186,7 @@ WA Conflict Resolution - Core Orchestrator
 
 **Description:**
 ```
-Core orchestrator for conflict analysis and execution. Receives combined WA+TS data, calls conflict analysis logic, then executes resolved actions. Does not retrieve data - expects data to be provided.
+Orchestrates conflict analysis and execution. Expects combined WA+TS data as input, analyzes conflicts, then executes actions.
 ```
 
 **Technical Name:** `WA_TS_Conflict_CoreOrchestrator`
@@ -203,7 +203,7 @@ WA Conflict Resolution - End to End
 
 **Description:**
 ```
-Top-level end-to-end orchestrator for complete conflict resolution process. Retrieves WA and TS data, then orchestrates conflict analysis and execution. Main entry point for automated conflict resolution jobs.
+End-to-end orchestrator for complete conflict resolution. Retrieves data, analyzes conflicts, and executes actions.
 ```
 
 **Technical Name:** `WA_TS_Conflict_EndToEnd`
@@ -220,7 +220,7 @@ TEST - Create Employee Timesheet
 
 **Description:**
 ```
-Test flow for creating timesheet events in SuccessFactors. Accepts employee ID, date, check-in/out times, and timezone. Creates C10 (check-in) and C20 (check-out) time events for testing purposes.
+Test flow for creating C10 (check-in) and C20 (check-out) timesheet events in SuccessFactors.
 ```
 
 **Technical Name:** `Test_TimeEvent_Create`
@@ -237,7 +237,7 @@ TEST - Delete Employee Timesheet
 
 **Description:**
 ```
-Test flow for deleting timesheet events in SuccessFactors. Accepts same input as create flow. Used for testing timesheet deletion functionality.
+Test flow for deleting timesheet events in SuccessFactors.
 ```
 
 **Technical Name:** `Test_TimeEvent_Delete`
@@ -252,7 +252,7 @@ Use this for quick reference when updating multiple flows:
 ```
 Flow 1: SF_WorkAssignment_Delete
 Display: Delete Work Assignment
-Desc: Deletes work assignment records in SuccessFactors by setting approvalStatus to CANCELLED.
+Desc: Deletes work assignments in SuccessFactors by setting approvalStatus to CANCELLED.
 
 Flow 2: SF_Employee_GetByLocation
 Display: Get Employee List by Location
@@ -262,7 +262,7 @@ Flow 3: DELETE (duplicate)
 
 Flow 4: SF_TimeEvent_GetByEmployeeDate
 Display: Get Employee Timesheet List
-Desc: Retrieves and processes timesheet events (C10/C20), groups by date, pairs check-ins with check-outs.
+Desc: Retrieves timesheet events (C10/C20), groups by date, and pairs check-ins with check-outs.
 
 Flow 5: SF_WorkAssignment_GetByDateRange
 Display: Get Work Assignment List
@@ -270,7 +270,7 @@ Desc: Fetches work assignments for dynamic date range (last 2 months to current 
 
 Flow 6: WA_TS_Orchestrator_ByLocation
 Display: WA & TS Orchestrator - By Location
-Desc: Orchestrates retrieval and combination of work assignments and timesheets by location.
+Desc: Retrieves work assignments and timesheets for a specific location and combines them.
 
 Flow 7: WA_TS_Combine_Single (DELETE or change endpoint)
 Display: WA & TS Data - Single Record
@@ -278,23 +278,23 @@ Desc: Fetches and combines single work assignment with corresponding timesheet.
 
 Flow 8: WA_TS_Combine_Bulk
 Display: WA & TS Data - Bulk Retrieval
-Desc: Batch processing for multiple work assignments and timesheets.
+Desc: Retrieves and combines multiple work assignments with timesheets for bulk processing.
 
 Flow 9: WA_TS_Conflict_Execute
 Display: WA Conflict Resolution - Execute Actions
-Desc: Executes conflict resolution actions (deletes, inserts) in SuccessFactors.
+Desc: Executes conflict resolution actions: deletes timesheets, inserts events, removes work assignments.
 
 Flow 10: WA_TS_Conflict_Analyze
 Display: WA Conflict Resolution - Analyze Logic
-Desc: Core conflict detection algorithm. Analyzes overlaps and generates action lists.
+Desc: Analyzes time overlaps between work assignments and timesheets, generates action lists.
 
 Flow 11: WA_TS_Conflict_CoreOrchestrator
 Display: WA Conflict Resolution - Core Orchestrator
-Desc: Core orchestrator for analysis and execution. Expects data to be provided.
+Desc: Orchestrates conflict analysis and execution. Expects combined WA+TS data as input.
 
 Flow 12: WA_TS_Conflict_EndToEnd
 Display: WA Conflict Resolution - End to End
-Desc: Top-level orchestrator. Retrieves data and orchestrates complete resolution process.
+Desc: End-to-end orchestrator. Retrieves data, analyzes conflicts, and executes actions.
 
 Flow 13: Test_TimeEvent_Create
 Display: TEST - Create Employee Timesheet
