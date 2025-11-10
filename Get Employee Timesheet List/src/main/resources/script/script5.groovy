@@ -1,24 +1,41 @@
-/* Refer the link below to learn more about the use cases of script.
-https://help.sap.com/viewer/368c481cd6954bdfa5d0435479fd4eaf/Cloud/en-US/148851bf8192412cba1f9d2c17f4bd25.html
+import com.sap.gateway.ip.core.customdev.util.Message
+import groovy.json.JsonOutput
 
-If you want to know more about the SCRIPT APIs, refer the link below
-https://help.sap.com/doc/a56f52e1a58e4e2bac7f7adbf45b2e26/Cloud/en-US/index.html */
-import com.sap.gateway.ip.core.customdev.util.Message;
 def Message processData(Message message) {
-    //Body
-    def body = message.getBody();
-/*To set the body, you can use the following method. Refer SCRIPT APIs document for more detail*/
-    //message.setBody(body + " Body is modified");
-    //Headers
-    
-    def headers = message.getHeaders();
-    def value = headers.get("oldHeader");
-    message.setHeader("oldHeader", value + " modified");
-    message.setHeader("newHeader", "newHeader");
-    //Properties
-    def properties = message.getProperties();
-    value = properties.get("oldProperty");
-    message.setProperty("oldProperty", value + " modified");
-    message.setProperty("newProperty", "newProperty");
-    return message;
+
+    // === 1) Parse batch XML from message body ===
+    def bodyStr = message.getBody(String)
+    def batchXml = new XmlSlurper().parseText(bodyStr)
+
+    // === 2) Extract filter value ===
+    def filter = batchXml.filter?.text()
+
+    if (filter) {
+        // Set filter as property for HTTP adapter to use
+        // The HTTP adapter in .iflw uses: $filter=${property.TimeEventFilter}
+        message.setProperty("TimeEventFilter", filter)
+    }
+
+    // === 3) Extract work assignments and store as JSON ===
+    def workAssignments = []
+
+    batchXml.workAssignments.wa.each { waNode ->
+        workAssignments << [
+            id: waNode.@id.text(),
+            employeeId: waNode.@employeeId.text(),
+            date: waNode.@date.text(),
+            startTime: waNode.@startTime.text(),
+            endTime: waNode.@endTime.text()
+        ]
+    }
+
+    // Store work assignments as JSON string in property for later matching in script6
+    def waJson = JsonOutput.toJson(workAssignments)
+    message.setProperty("CurrentBatchWorkAssignments", waJson)
+
+    // Optional: Set batch metadata for monitoring
+    message.setProperty("BatchNumber", batchXml.batchNumber?.text() ?: "0")
+    message.setProperty("RecordCount", batchXml.recordCount?.text() ?: "0")
+
+    return message
 }

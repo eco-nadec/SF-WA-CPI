@@ -1,12 +1,11 @@
 import com.sap.gateway.ip.core.customdev.util.Message
 import groovy.json.JsonSlurper
-import java.time.OffsetDateTime
-import java.time.ZoneOffset
+import groovy.json.JsonOutput
 
 def Message processData(Message message) {
 
     // === 0) Config ===
-    // Allow override from message property "MaxUrlQueryLen"; fallback to 3500
+    // Max URL query length - allow override from message property
     int MAX_LEN = 0
     try {
         def p = message.getProperty("MaxUrlQueryLen")
@@ -15,152 +14,187 @@ def Message processData(Message message) {
     if (MAX_LEN <= 0) MAX_LEN = 3500
 
     // === 1) Read & parse input ===
+    // Expected: [{"id":"xxx", "employeeId":"30109", "date":"2025-11-04", "startTime":"13:00", "endTime":"16:00"}, ...]
     def bodyStr = message.getBody(String) as String
-    def rows = new JsonSlurper().parseText(bodyStr) as List
+    def workAssignments = new JsonSlurper().parseText(bodyStr) as List
 
-    // === 2) Normalize -> group by (assignmentId, local date in UTC day window) ===
-    // Each row has timestamp with +03:00; we need the UTC DAY window 00:00..23:59:59Z
-    // We'll compute the UTC date for windowing.
-    def groups = [:].withDefault { [types: [] , count: 0, assignmentId: null, dateUtc: null] }
+    // === 2) Group by (employeeId, date) for deduplication ===
+    // Multiple work assignments for same employee/date = single SF API query
+    def groups = [:]
 
-    rows.each { r ->
-        def assignmentId = r.assignmentId?.toString()
-        def typeCode = r.typeCode?.toString()
-        if (!assignmentId || !typeCode || !r.timestamp) return
+    workAssignments.each { wa ->
+        def empId = wa.employeeId?.toString()
+        def date = wa.date?.toString()
 
-        OffsetDateTime odt = OffsetDateTime.parse(r.timestamp.toString())
-        // Convert to UTC, then take the UTC date for the day window
-        def utc = odt.withOffsetSameInstant(ZoneOffset.UTC)
-        def dateUtc = utc.toLocalDate().toString() // yyyy-MM-dd
+        if (!empId || !date) return // Skip invalid records
 
-        def key = "${assignmentId}_${dateUtc}"
-        def g = groups[key]
-        g.assignmentId = assignmentId
-        g.dateUtc = dateUtc
-        g.types << typeCode
-        g.count = (g.count ?: 0) + 1
+        def key = "${empId}_${date}"
+
+        // Initialize group if it doesn't exist
+        if (!groups[key]) {
+            groups[key] = [
+                employeeId: empId,
+                date: date,
+                workAssignments: []
+            ]
+        }
+
+        // Add work assignment to group
+        groups[key].workAssignments << [
+            id: wa.id?.toString(),
+            employeeId: empId,
+            date: date,
+            startTime: wa.startTime?.toString(),
+            endTime: wa.endTime?.toString()
+        ]
     }
 
-    // Deduplicate type codes per group
-    groups.each { k, g -> g.types = g.types.unique() }
+    // === 3) Build individual group filters ===
+    // Each group represents one (employeeId, date) combination
+    def groupFilterChunks = []
 
-    // === 3) Percent encoder (URL query safe for OData $filter) ===
-    def pctEncode = { String s ->
-        s.replace("%","%25")
-         .replace(" ", "%20")
-         .replace("(", "%28")
-         .replace(")", "%29")
-         .replace("'", "%27")
-         .replace(":", "%3A")
-         .replace(",", "%2C")
-         .replace("+", "%2B")
-         .replace("\"","%22")
+    groups.values().each { g ->
+        def from = "${g.date}T00:00:00Z"
+        def to   = "${g.date}T23:59:59Z"
+
+        // OData filter for this employee/date
+        def rawFilter = "(workAssignmentId eq '${g.employeeId}' and (timeEventTypeCode eq 'C10' or timeEventTypeCode eq 'C20') and timestampUTC ge ${from} and timestampUTC le ${to})"
+        def encFilter = pctEncode(rawFilter)
+
+        groupFilterChunks << [
+            encodedFilter: encFilter,
+            rawFilter: rawFilter,
+            workAssignments: g.workAssignments
+        ]
     }
-    // Encoded " or " once so we can add without re-encoding
+
+    // === 4) Pack many group filters into batches under MAX_LEN ===
+    // Combine multiple employee/date groups with " or " until URL limit reached
     final String OR_ENC = "%20or%20"
 
-    // === 4) Build individual group filters
-    // If a single group would exceed MAX_LEN due to many type codes, split its types into chunks.
-    def groupFilterChunks = []  // each item: [encodedFilter: String, rawFilter: String, count: int]
-    groups.values().each { g ->
-        def from = "${g.dateUtc}T00:00:00Z"
-        def to   = "${g.dateUtc}T23:59:59Z"
-
-        // Helper to make raw filter from a subset of type codes
-        def mkRaw = { List<String> typeList ->
-            def typeExpr = typeList.collect { "timeEventTypeCode eq '${it}'" }.join(" or ")
-            return "(workAssignmentId eq '${g.assignmentId}' and (${typeExpr}) and timestampUTC ge ${from} and timestampUTC le ${to})"
-        }
-
-        // First try with all types
-        def rawAll = mkRaw(g.types)
-        def encAll = pctEncode(rawAll)
-
-        if (encAll.length() <= MAX_LEN) {
-            groupFilterChunks << [encodedFilter: encAll, rawFilter: rawAll, count: g.count]
-        } else {
-            // Split types into smaller chunks until each chunk fits by itself
-            List<String> types = g.types
-            int start = 0
-            while (start < types.size()) {
-                int end = Math.min(types.size(), start + 1) // grow chunk
-                // Expand chunk greedily while under MAX_LEN
-                while (end <= types.size()) {
-                    def rawChunk = mkRaw(types.subList(start, end))
-                    def encChunk = pctEncode(rawChunk)
-                    if (encChunk.length() > MAX_LEN) {
-                        // step back one
-                        if (end == start + 1) {
-                            // Even a single type makes it too long: we must fail-safe by emitting as-is
-                            groupFilterChunks << [encodedFilter: encChunk, rawFilter: rawChunk, count: 1]
-                            start = end
-                        } else {
-                            def rawPrev = mkRaw(types.subList(start, end - 1))
-                            def encPrev = pctEncode(rawPrev)
-                            groupFilterChunks << [encodedFilter: encPrev, rawFilter: rawPrev, count: (end - 1 - start)]
-                            start = end - 1
-                        }
-                        break
-                    } else if (end == types.size()) {
-                        // fits; push final chunk
-                        groupFilterChunks << [encodedFilter: encChunk, rawFilter: rawChunk, count: (end - start)]
-                        start = end
-                        break
-                    } else {
-                        end++
-                    }
-                }
-            }
-        }
-    }
-
-    // === 5) Pack many group filters into batches under MAX_LEN ===
     def batches = []
     def currentEncoded = new StringBuilder()
-    int currentCount = 0
+    def currentWorkAssignments = []
+
     def flushBatch = {
         if (currentEncoded.length() > 0) {
-            batches << [encodedFilter: currentEncoded.toString(), count: currentCount]
+            batches << [
+                encodedFilter: currentEncoded.toString(),
+                workAssignments: new ArrayList(currentWorkAssignments)
+            ]
             currentEncoded.setLength(0)
-            currentCount = 0
+            currentWorkAssignments.clear()
         }
     }
 
-    groupFilterChunks.eachWithIndex { gf, idx ->
+    groupFilterChunks.each { gf ->
         def enc = gf.encodedFilter
+
         if (currentEncoded.length() == 0) {
-            // start new
+            // Start new batch
             currentEncoded.append(enc)
-            currentCount += gf.count
+            currentWorkAssignments.addAll(gf.workAssignments)
         } else {
             int prospectiveLen = currentEncoded.length() + OR_ENC.length() + enc.length()
+
             if (prospectiveLen > MAX_LEN) {
+                // Current batch is full, flush and start new
                 flushBatch()
                 currentEncoded.append(enc)
-                currentCount += gf.count
+                currentWorkAssignments.addAll(gf.workAssignments)
             } else {
+                // Add to current batch
                 currentEncoded.append(OR_ENC).append(enc)
-                currentCount += gf.count
+                currentWorkAssignments.addAll(gf.workAssignments)
             }
         }
     }
     flushBatch()
 
-    // === 6) Emit XML ===
-    def sb = new StringBuilder()
-    sb.append("<BatchedTimeEventRequests>\n")
-    int batchNum = 1
-    batches.each { b ->
-        sb.append("  <batch>\n")
-        sb.append("      <batchNumber>").append(batchNum++).append("</batchNumber>\n")
-        sb.append("      <recordCount>").append(b.count).append("</recordCount>\n")
-        sb.append("      <filter>").append(b.encodedFilter).append("</filter>\n")
-        sb.append("  </batch>\n")
-    }
-    sb.append("</BatchedTimeEventRequests>")
+    // === 5) Emit XML with batches + work assignment mapping ===
+    // Build XML manually to avoid MarkupBuilder closure issues
+    def xmlBuilder = new StringBuilder()
+    xmlBuilder.append('<?xml version="1.0" encoding="UTF-8"?>\n')
+    xmlBuilder.append('<BatchedTimeEventRequests>\n')
 
-    message.setBody(sb.toString())
-    // Optional: expose the limit used (for MPL visibility)
+    batches.eachWithIndex { batch, idx ->
+        xmlBuilder.append('  <batch>\n')
+        xmlBuilder.append("    <batchNumber>${idx + 1}</batchNumber>\n")
+        xmlBuilder.append("    <recordCount>${batch.workAssignments.size()}</recordCount>\n")
+        xmlBuilder.append("    <filter>${escapeXml(batch.encodedFilter)}</filter>\n")
+        xmlBuilder.append('    <workAssignments>\n')
+
+        batch.workAssignments.each { wa ->
+            xmlBuilder.append('      <wa')
+            xmlBuilder.append(" id=\"${escapeXml(wa.id ?: '')}\"")
+            xmlBuilder.append(" employeeId=\"${escapeXml(wa.employeeId ?: '')}\"")
+            xmlBuilder.append(" date=\"${escapeXml(wa.date ?: '')}\"")
+            xmlBuilder.append(" startTime=\"${escapeXml(wa.startTime ?: '')}\"")
+            xmlBuilder.append(" endTime=\"${escapeXml(wa.endTime ?: '')}\"")
+            xmlBuilder.append('/>\n')
+        }
+
+        xmlBuilder.append('    </workAssignments>\n')
+        xmlBuilder.append('  </batch>\n')
+    }
+
+    xmlBuilder.append('</BatchedTimeEventRequests>')
+
+    def xmlOutput = xmlBuilder.toString()
+
+    // Set body as String and force XML content type
+    message.setBody(xmlOutput)
+    message.setHeader("Content-Type", "text/xml; charset=UTF-8")
+
+    // ALSO store as property as backup (in case body is not propagating)
+    message.setProperty("BatchedXML", xmlOutput)
+
+    // Store all original work assignments as JSON for later matching in script6
+    // This property persists through splitter/gather and will be available after gather
+    def allWaJson = JsonOutput.toJson(workAssignments)
+    message.setProperty("AllOriginalWorkAssignments", allWaJson)
+
     message.setProperty("MaxUrlQueryLenUsed", MAX_LEN)
+    message.setProperty("TotalWorkAssignments", workAssignments.size())
+    message.setProperty("TotalBatches", batches.size())
+
+    // Log for debugging
+    def messageLog = messageLogFactory.getMessageLog(message)
+    if (messageLog) {
+        messageLog.addAttachmentAsString(
+            "Script4_Output_XML",
+            xmlBuilder.toString(),
+            "text/xml"
+        )
+        messageLog.addAttachmentAsString(
+            "Script4_Debug_Info",
+            "Total WAs: ${workAssignments.size()}\nTotal Groups: ${groups.size()}\nTotal Batches: ${batches.size()}",
+            "text/plain"
+        )
+    }
+
     return message
+}
+
+// === Helper: Percent encoder for OData $filter ===
+def pctEncode(String s) {
+    return s.replace("%", "%25")
+            .replace(" ", "%20")
+            .replace("(", "%28")
+            .replace(")", "%29")
+            .replace("'", "%27")
+            .replace(":", "%3A")
+            .replace(",", "%2C")
+            .replace("+", "%2B")
+            .replace("\"", "%22")
+}
+
+// === Helper: XML escape ===
+def escapeXml(String s) {
+    if (!s) return ""
+    return s.replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+            .replace("\"", "&quot;")
+            .replace("'", "&apos;")
 }
